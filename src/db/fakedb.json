@@ -1,0 +1,23 @@
+{
+    "users": [
+      {
+        "id": 1,
+        "name": "bruno",
+        "email": "bruno@email.com",
+        "password": "bruno",
+        "lastname": "smith",
+        "address": "test 2th",
+        "phone": "+2126543367822"
+        
+      },
+      {
+        "id": 2,
+        "name": "nilson",
+        "lastname": "smith",
+        "email": "nilson@email.com",
+        "address": "test 2th",
+        "phone": "+2126543367822",
+        "password": "nilson"
+      }
+    ]
+  }
