@@ -1,5 +1,5 @@
 import axios from 'axios';
-// import router from '@/router';
+const token = localStorage.getItem('user-token');
 
 axios.interceptors.response.use(function (response) {
     return response;
@@ -9,4 +9,8 @@ axios.interceptors.response.use(function (response) {
     // Do something with response error
     return Promise.reject(error);
   });
+  
+if (token) {
+  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+}
 export default axios;

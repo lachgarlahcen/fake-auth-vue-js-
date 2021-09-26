@@ -1,15 +1,26 @@
 const fs = require('fs')
 const jsonServer = require('json-server')
-var bodyParser = require('body-parser')
 const jwt = require('jsonwebtoken')
 const server = jsonServer.create()
+var bodyParser = require('body-parser');
 const dbPath = 'src/db/fakedb.json';
-const express = require('express');
+var middlewares = jsonServer.defaults()
+
+server.use(middlewares);
+server.use(bodyParser.json());
+server.use(bodyParser.urlencoded({
+  extended: true
+}));
 
 
 const SECRET_KEY = 'SECRECT_KEY_XXXXXXXXXXXXXX'
 const expiresIn = '1h'
 
+
+// remove reference 
+function rmReference(obj){
+  return JSON.parse(JSON.stringify(obj));
+}
 // Create a token from a payload 
 function createToken(payload)
 {
@@ -21,11 +32,7 @@ function createToken(payload)
   {
     return  jwt.verify(token, SECRET_KEY, (err, decode) => decode !== undefined ?  decode : err)
   }
-//   destroy the token
-  function destroyToken(token)
-  {
-    return  jwt.destroy(token);
-  }
+
   
   // Check if the user exists in database
   function isAuthenticated({email, password})
@@ -50,30 +57,28 @@ function createToken(payload)
   })
 //   RGISTER ENDPOINT 
   server.post('/auth/register', (req, res) => {
-    const {email, password, name, lastname, address, phone} = req.body
-    if (!!email && password && name && lastname && address & phone ){
-        let db = JSON.parse(fs.readFileSync('./db/fakedb.json', 'UTF-8'));
-        db.users.push({id: Math.floor(Math.random() * 10000, email, password, name, lastname, address, phone)});
-        fs.writeFileSync(dbPath, data);
+    const {email, password, name, lastName, address, phone} = req.body
+    if (email && password && name && lastName && address && phone ){
+        let db = JSON.parse(fs.readFileSync(dbPath, 'UTF-8'));
+        db.users.push({id: Math.floor(Math.random() * 10000, email, password, name, lastName, address, phone)});
+        fs.writeFileSync(dbPath, JSON.stringify(db));
         res.status(200).json({mssg: "User registred successfully"})
     }
     res.status(403).json({mssg: "Invalid data"});
   })
 
-//   LOGOUT ENDPOINT
-server.post('/auth/logout', (req, res) => {
-    destroyToken(req.headers.authorization.split(' ')[1]);
-    res.status(200).json({mssg: "logged out successfully"});
-  })
 
 //   ME ENDPOINT
-server.post('/me', (req, res) => {
-    let userdb = JSON.parse(fs.readFileSync(dbPath, 'UTF-8'))
+server.get('/me', (req, res) => {
+    let userdb = JSON.parse(fs.readFileSync(dbPath, 'UTF-8'));
+    const token = req.headers.authorization.split(' ')[1];
     jwt.verify(token, SECRET_KEY, (err, payload) =>{
         let index = userdb.users.findIndex(user => user.email === payload.email && user.password === payload.password);
         if (index != -1)
         {
-            res.status(200).json(userdb.users[index]);
+          let user = rmReference(userdb.users[index]);
+          delete user.password;
+          res.status(200).json(user);
         }
         res.status(404).json({mssg: "No such user"});
     })
@@ -101,10 +106,7 @@ server.post('/me', (req, res) => {
       res.status(status).json({status, message})
     }
   })
-  server.use(express.json());
-  server.use(express.urlencoded({
-    extended: true
-  }));
+
 server.listen(3000, () => {
   console.log('Run Auth API Server')
 })

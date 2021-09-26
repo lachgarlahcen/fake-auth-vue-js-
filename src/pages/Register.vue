@@ -3,9 +3,9 @@
       <div class="container">
          <div class="row">
             <div class="col-lg-4 col-md-6 col-sm-8 mx-auto">
-               <div  class="card register" v-bind:class="{ error: emptyFields }">
+               <div  class="card register" v-bind:class="{ error: error }">
                   <h1>Sign Up</h1>
-                  <form class="form-group">
+                  <form class="form-group" @submit.prevent="doRegister">
                       <input v-model="name" type="text" class="form-control" placeholder="Name" required>
                       <input v-model="lastName" type="text" class="form-control" placeholder="Last Name" required>
                      <input v-model="email" type="email" class="form-control" placeholder="Email" required>
@@ -13,7 +13,7 @@
                      <input v-model="address" type="text" class="form-control" placeholder="Address" required>
                      <input v-model="password" type="password" class="form-control" placeholder="Password" required>
                      <input v-model="confirmPass" type="password" class="form-control" placeholder="Confirm Password" required>
-                     <input type="submit" class="btn " @click="doRegister">
+                     <input type="submit" class="btn"/>
                      <p>Already have an account? <a href="#" @click="login">Sign in here</a>
                      </p>
                   </form>
@@ -25,26 +25,44 @@
    </div>
 </template>
 <script>
-
+import { mapActions } from "vuex";
 export default {
+   
     data(){
         return {
       email: "",
       password: "",
+      name: "",
+      lastName: "",
+      phone: "",
+      address: "",
       confirmPass: "",
-      emptyFields: false
+      error: false
    }
     },
-   
+   computed:{
+       validate(){
+         return this.password === this.confirmPass;
+      }
+   },
    methods: {
+      ...mapActions('auth',['register']),
        login(){
            this.$router.push('login')
        },
       doRegister() {
-         if (this.emailReg === "" || this.passwordReg === "" || this.confirmReg === "") {
-            this.emptyFields = true;
-         } else {
-            alert("You are now registered");
+         if(this.validate){
+            this.register({
+            email: this.email,
+            password: this.password,
+            name: this.name,
+            lastName: this.lastName,
+            address: this.address,
+            phone: this.phone
+            });
+         }
+         else{
+            this.error = true;
          }
       }
    }

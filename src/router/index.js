@@ -3,7 +3,24 @@ import VueRouter from 'vue-router'
 import Home from '@/pages/Home.vue';
 import Login from '@/pages/Login.vue';
 import Register from '@/pages/Register.vue';
-// import Charts from '../views/Charts.vue';
+import Profile from '@/pages/Profile.vue';
+import store from '@/store' 
+
+const notAuthenticated = (to, from, next) => {
+  if (!store.getters['auth/token']) {
+    next()
+    return
+  }
+  next('/')
+}
+
+const authenticated = (to, from, next) => {
+  if (store.getters['auth/token']) {
+    next()
+    return
+  }
+  next('/login')
+}
 
 Vue.use(VueRouter)
 
@@ -11,17 +28,26 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: Home
+    component: Home,
+    beforeEnter: authenticated,
   },
   {
     path: '/login',
     name: 'login',
-    component: Login
+    component: Login,
+    beforeEnter: notAuthenticated,
   },
   {
     path: '/register',
     name: 'register',
-    component: Register
+    component: Register,
+    beforeEnter: notAuthenticated,
+  },
+  {
+    path: '/profile',
+    name: 'profile',
+    component: Profile,
+    beforeEnter: authenticated,
   },
 ]
 
@@ -30,22 +56,6 @@ const router = new VueRouter({
   routes
 })
 
-// router.beforeEach((to, from, next) => {
-//   const user = router.app.$store?.getters["auth/loggedUser"];
-//   if(!user) {
-//     if(to.name === 'Login' || to.name === 'Register') {
-//       next();
-//     }
-//     else {
-//       next({name: 'Login'});
-//     }
-//   } else {
-//     if(to.name === 'Login' || to.name === 'Register') {
-//       next({name: 'Home'});
-//     } else {
-//       next();
-//     }
-//   }
-// })
+
 
 export default router
