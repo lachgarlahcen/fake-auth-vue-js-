@@ -60,7 +60,18 @@ function createToken(payload)
     const {email, password, name, lastName, address, phone} = req.body
     if (email && password && name && lastName && address && phone ){
         let db = JSON.parse(fs.readFileSync(dbPath, 'UTF-8'));
-        db.users.push({id: Math.floor(Math.random() * 10000, email, password, name, lastName, address, phone)});
+        let randoId = Math.floor(Math.random() * 10000);
+        db.users.push(
+          {
+            id: randoId, 
+            email: email, 
+            password: password, 
+            name: name, 
+            lastName: lastName, 
+            address: address, 
+            phone: phone
+          }
+          );
         fs.writeFileSync(dbPath, JSON.stringify(db));
         res.status(200).json({mssg: "User registred successfully"})
     }

@@ -9,7 +9,7 @@
                      <input v-model="email" type="email" class="form-control" placeholder="Email" required>
                      <input v-model="password" type="password" class="form-control" placeholder="Password" required>
                      <input type="submit" class="btn " @click.prevent="doLogin">
-                     <p>Don't have an account? <a href="#" >Sign up here</a>
+                     <p>Don't have an account? <a href="/register" >Sign up here</a>
                      </p>
                   </form>
                </div>
