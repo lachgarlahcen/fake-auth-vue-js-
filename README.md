@@ -4,13 +4,14 @@
 ```
 npm install
 ```
-### See in Browser
-```
-http://localhost:8080
-```
+
 ### Compiles and hot-reloads for development
 ```
 npm run server & npm run client
+```
+### See in Browser
+```
+http://localhost:8080
 ```
 
 ### Compiles and minifies for production
