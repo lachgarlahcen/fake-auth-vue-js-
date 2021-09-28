@@ -43,7 +43,6 @@ function createToken(payload)
 
   // LOGIN END POINT
   server.post('/auth/login', (req, res) => {
-    console.log(req);
     const {email, password} = req.body
     if (isAuthenticated({email, password}) === false) {
       const status = 401

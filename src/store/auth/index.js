@@ -32,6 +32,13 @@ const actions = {
     login({commit}, params) {
         this._vm.$axios.post('http://localhost:3000/auth/login', params).then(res =>{
             commit("LOGIN", res.data.token);
+            this._vm.$bvToast.toast("Successfully logged in", {
+                title: 'Alert',
+                variant: 'success',
+                toaster: 'b-toaster-top-right',
+                autoHideDelay: 3000,
+                solid: true
+            })
             router.push({name: 'home'});
         }).catch(err =>{
             console.log(err);
@@ -42,16 +49,18 @@ const actions = {
         this._vm.$axios.post('http://localhost:3000/auth/register', params).then(res =>{
             commit("REGISTER", params);
             this._vm.$bvToast.toast(res.data.mssg, {
+                title: 'Alert',
                 variant: 'success',
-                toaster: 'b-toaster-bottom-right',
+                toaster: 'b-toaster-top-right',
                 autoHideDelay: 3000,
                 solid: true
             })
             router.push({name: 'login'});
         }).catch(err =>{
             this._vm.$bvToast.toast(err.response.data.mssg, {
+                title: 'Alert',
                 variant: 'danger',
-                toaster: 'b-toaster-bottom-right',
+                toaster: 'b-toaster-top-right',
                 autoHideDelay: 3000,
                 solid: true
             })
